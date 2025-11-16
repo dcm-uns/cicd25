@@ -1,0 +1,49 @@
+name: CI/CD Pipeline
+
+# 1. Disparador: Se ejecuta en cada 'push' a la rama 'main'
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  # -------------------------------------
+  # JOB 1: Correr Tests (CI)
+  # -------------------------------------
+  test:
+    name: 🧪 Correr Tests E2E
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Sacar el código
+        uses: actions/checkout@v4
+
+      - name: 📦 Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18 # O la versión que prefieras
+
+      - name: 📥 Instalar dependencias
+        run: npm install
+
+      - name: 🤖 Instalar navegadores de Playwright
+        run: npx playwright install --with-deps
+
+      - name: 🚀 Correr tests de Playwright
+        run: npx playwright test
+
+  # -------------------------------------
+  # JOB 2: Hacer Deploy (CD)
+  # -------------------------------------
+  deploy:
+    name: 🚀 Hacer Deploy a Render
+    # 'needs: test' es la CLAVE.
+    # Este job solo se ejecuta si el job 'test' terminó con éxito.
+    needs: test 
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔔 Disparar Deploy Hook de Render
+        run: |
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+          echo "Deploy solicitado a Render."
+          

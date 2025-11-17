@@ -1,6 +1,6 @@
 # ----- Etapa 1: Construcción (Build Stage) -----
 # Usamos una imagen de Node 18 (Alpine es más ligera)
-FROM node:18-alpine AS build
+FROM node:21-alpine AS build
 WORKDIR /app
 # Copiamos los package.json e instalamos dependencias (incluyendo devDependencies)
 COPY package*.json ./

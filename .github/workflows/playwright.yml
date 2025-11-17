@@ -36,7 +36,9 @@ jobs:
     name:  Construir y Publicar Docker
     runs-on: ubuntu-latest
     # Se ejecuta solo si los tests y linting pasan
-    needs: [test] 
+    needs: [test]
+    # Publicar imagen solo desde la rama `main` para evitar tags incorrectos
+    if: github.ref == 'refs/heads/main'
     
     steps:
       - name: Sacar el código
@@ -62,7 +64,7 @@ jobs:
           tags: |
             type=sha,prefix=,format=short # Tag con el hash corto del commit
             type=ref,event=branch         # Tag con el nombre de la rama
-            type=raw,value=latest,enable={{isDefaultBranch}} # Tag 'latest' solo en la rama 'main'
+            type=raw,value=latest,enable=true # Tag 'latest' solo en la rama 'main' (job restringido a main)
 
       - name: Mostrar tags generadas (debug)
         run: |

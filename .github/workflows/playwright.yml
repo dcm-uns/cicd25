@@ -48,7 +48,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          # Nombra la imagen con tu usuario/nombre_app
+          # Nombra la imagen con tu usuario/nombre_app -- hardcodeado!
           images: dcmdockerhub/cicd25
           tags: |
             type=sha,prefix=,format=short # Tag con el hash corto del commit

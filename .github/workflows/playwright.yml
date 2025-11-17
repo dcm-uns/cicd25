@@ -42,16 +42,32 @@ jobs:
       - name: Sacar el código
         uses: actions/checkout@v4
 
+      - name: Comprobar secrets de Docker Hub
+        run: |
+          if [ -z "${{ secrets.DOCKERHUB_USERNAME }}" ]; then
+            echo "ERROR: secret DOCKERHUB_USERNAME no está configurado en el repositorio";
+            exit 1;
+          fi
+          if [ -z "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
+            echo "ERROR: secret DOCKERHUB_TOKEN no está configurado en el repositorio";
+            exit 1;
+          fi
+
       - name: Extraer metadatos de Docker (tags)
         id: meta
         uses: docker/metadata-action@v5
         with:
           # Nombra la imagen con tu usuario/nombre_app
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/mi-app-ci-demo
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/cicd25
           tags: |
             type=sha,prefix=,format=short # Tag con el hash corto del commit
             type=ref,event=branch         # Tag con el nombre de la rama
-            type=raw,value=latest,enable={{is_default_branch}} # Tag 'latest' solo en la rama 'main'
+            type=raw,value=latest,enable={{isDefaultBranch}} # Tag 'latest' solo en la rama 'main'
+
+      - name: Mostrar tags generadas (debug)
+        run: |
+          echo "Computed tags:";
+          echo "${{ steps.meta.outputs.tags }}";
 
       - name: 🌐 Configurar QEMU (para multi-plataforma)
         uses: docker/setup-qemu-action@v3

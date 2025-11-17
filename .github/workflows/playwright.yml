@@ -60,7 +60,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           # Nombra la imagen con tu usuario/nombre_app
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/cicd25
+          images: dcmdockerhub/cicd25
           tags: |
             type=sha,prefix=,format=short # Tag con el hash corto del commit
             type=ref,event=branch         # Tag con el nombre de la rama

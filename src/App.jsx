@@ -8,7 +8,7 @@ function App() {
 
   return (
     <>
-      <h1>Mi Contador</h1>
+      <h1>Mi Contador en Clase DockerHub</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}

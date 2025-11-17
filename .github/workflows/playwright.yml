@@ -44,17 +44,6 @@ jobs:
       - name: Sacar el código
         uses: actions/checkout@v4
 
-      - name: Comprobar secrets de Docker Hub
-        run: |
-          if [ -z "${{ secrets.DOCKERHUB_USERNAME }}" ]; then
-            echo "ERROR: secret DOCKERHUB_USERNAME no está configurado en el repositorio";
-            exit 1;
-          fi
-          if [ -z "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
-            echo "ERROR: secret DOCKERHUB_TOKEN no está configurado en el repositorio";
-            exit 1;
-          fi
-
       - name: Extraer metadatos de Docker (tags)
         id: meta
         uses: docker/metadata-action@v5
@@ -78,18 +67,10 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: 🔑 Iniciar sesión en Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: 🏗️ Construir y publicar imagen
+      - name: 🏗️ Construir imagen (SIN publicar para debug)
         uses: docker/build-push-action@v5
         with:
           context: .         # El contexto de build (donde está el Dockerfile)
-          push: true         # ¡Publica la imagen!
+          push: false        # Solo construir, sin publicar
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha # Habilita caché de capas de Docker
-          cache-to: type=gha,mode=max

@@ -2,9 +2,9 @@
 # Usamos una imagen de Node 18 (Alpine es más ligera)
 FROM node:18-alpine AS build
 WORKDIR /app
-# Copiamos los package.json e instalamos dependencias
+# Copiamos los package.json e instalamos dependencias (incluyendo devDependencies)
 COPY package*.json ./
-RUN npm install
+RUN npm ci --include=dev
 # Copiamos el resto del código fuente
 COPY . .
 # Construimos la app para producción
